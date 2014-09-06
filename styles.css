@@ -1,0 +1,238 @@
+/* Sticky footer styles */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 28px;
+  padding-top: 0;
+  background:rgb(129,175,177) !important;
+}
+
+#footer {
+  margin-top:10px;
+  width: 100%;
+  height: 18px;
+  font-size:12px;
+}
+
+#footer a {
+    color:#eeeeee;
+}
+
+/* Custom jumbotron */
+.jumbotron {
+  /*padding: 144px 0;*/
+}
+
+.artist-input {
+    width:800px;
+}
+
+.sp-jumbotron-custom-inverse {
+  /*background-image: url(images/background.jpg);*/
+  background-image: url(images/bg.jpg);
+}
+
+@media screen and (min-width: 768px) {
+  .sp-jumbotron-custom {
+    background-image: url(images/bg.jpg);
+  }
+}
+
+
+.h1 {
+  margin-bottom: 42px; /* (@padding-base-vertical * 7) */
+}
+
+#top {
+    margin-top:66px;
+    position:relative;
+}
+
+img {
+  margin: 0 auto;
+}
+
+h3 {
+  font-weight: 600; /* @font-weight-semibold */
+  margin-top: 12px;
+}
+
+
+p {
+  margin-bottom: 18px; /* a little more breathing room between feature tiles in mobile
+view) */
+}
+
+@media screen and (min-width: 992px) {
+  p {
+    margin-bottom: 12px; /* reset to default */
+  }
+}
+
+.work {
+}
+
+#info {
+    margin-top:86px;
+    font-size:32px;
+    margin-bottom:0px;
+}
+
+.fine-print {
+  margin-bottom: 30px; /* (@padding-base-vertical * 5) */
+}
+
+#search-form {
+    margin-bottom:20px;
+}
+
+#go {
+    margin-bottom:20px;
+}
+
+
+.imgdiv {
+    min-height:600px;
+    border-color:red;
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position: center center;
+    background-position: center 20%;
+    position:relative;
+    margin-bottom:4px;
+}
+
+.artist-panel {
+    position:relative;
+    width:100%;
+}
+
+.intitle {
+    padding-left:10px;
+    font-size:32px;
+    font-weight:lighter;
+    background: rgba(14, 14, 14, 0.8); 
+    width:100%;
+    position:absolute;
+    bottom:0;
+    left:0;
+}
+
+#results {
+    margin-top:86px;
+    display:none;
+}
+
+.artist-result {
+    text-align:center;
+}
+
+#ttext {
+    margin-top:20px;
+    margin-bottom:30px;
+    width: 80%;
+    margin-left:auto;
+    margin-right:auto;
+
+}
+
+#ttitle {
+}
+
+#jumbo-dialog {
+    background: rgba(14,14,14, 0.3);
+    border-radius:5px;
+}
+
+
+#bottom-buttons {
+    margin-bottom:20px;
+    margin-left:auto;
+    margin-right:auto;
+    text-align:center;
+    display:none;
+}
+
+#save {
+    margin-top:20px;
+}
+
+
+#photo-credit {
+    font-size:10px;
+    position:absolute;
+    bottom:0px;
+    color:#cccccc;
+}
+
+#photo-credit a {
+    color:#cccccc;
+}
+
+#brand {
+    margin-left:20px;
+    margin-right:20px;
+}
+
+
+.twitter-typeahead .tt-query,
+.twitter-typeahead .tt-hint {
+    margin-bottom: 0;
+}
+.tt-hint {
+    display: block;
+    width: 100%;
+    height: 38px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #999;
+    vertical-align: middle;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out
+0.15s;
+          transition: border-color ease-in-out 0.15s, box-shadow ease-in-out
+0.15s;
+}
+.tt-dropdown-menu {
+    min-width: 160px;
+    margin-top: 2px;
+    padding: 5px 0;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box;
+ 
+}
+.tt-suggestion {
+    display: block;
+    padding: 3px 20px;
+}
+.tt-suggestion.tt-is-under-cursor {
+    color: #fff;
+    background-color: #428bca;
+}
+.tt-suggestion.tt-is-under-cursor a {
+    color: #fff;
+}
+.tt-suggestion p {
+    margin: 0;
+}
+
+#pause-play {
+    margin-bottom:20px;
+}
+
+.play-button {
+}

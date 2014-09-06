@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link type="text/css" href="styles.css" rel="stylesheet" />
+    <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <title>Is this song epic?</title>
+    <!-- Custom styles for this template -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+  <body >
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a id='brand' class="navbar-brand"
+          href="index.html"><span>Where is the drama?</span></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <a href="https://www.spotify.com/" 
+            class="btn btn-primary navbar-btn navbar-right">Get Spotify</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div id='top' class="jumbotron jumbotron-inverse jumbotron-hero sp-jumbotron-custom-inverse">
+      <div class="container-fluid" id="jumbo-dialog">
+        <h1 id='ttitle' > Where is the Drama?</h1>
+        <p id='ttext'>
+            Enter a song and we will show you where the <b class="label
+            label-info">DRAMA</b> is.
+        </p>
+        <div id="search-form" class="row">
+            <div class="col-sm-offset-1 col-sm-5">
+            <input type="text" 
+                class="form-control input-lg artist-input"  
+                    id="artist-input"     
+                    placeholder="Enter artist name" 
+                    value="">
+
+            </div>
+
+            <div class="col-sm-5">
+            <input type="text" 
+                    class="form-control input-lg artist-input"  
+                    id="song-input" 
+                    placeholder="Song Title"
+                    value="">
+            </div>
+            </div>
+
+        <p><button class="btn btn-primary btn-lg" id='go' 
+            role="button">Go</button></p>
+      </div>
+    </div>
+
+    <div id='info' class="h1 text-center"></div>
+
+    <div class="container-fluid" id="results">
+      <div class="row">
+        <div class='text-center'>
+             <button id="pause-play" class="play-button btn btn-primary btn-large">
+                <i class="play-text glyphicon glyphicon-play"> Play the Drama</i>
+              </button>
+        </div>
+        <div id="output" class="artist-result col-sm-12"> </div>
+      </div>
+    </div> 
+
+    <div id="footer">
+      <div class="container text-center">
+            <p class="text-muted">
+                Powered by <a href="http://spotify.com">Spotify</a> and
+                <a href="http://the.echonest.com">The Echo Nest</a>.
+                Created by <a href="http://twitter.com/plamere">@plamere</a>
+                at <a href="http://musichackday.de/"> Music Hack Day Berlin</a>.
+            </p>
+
+      </div>
+    </div>
+    <script src="lib/jquery-1.11.1.min.js"></script>
+    <script src="lib/typeahead.bundle.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/underscore-min.js"></script>
+    <script src="lib/highcharts.js"></script>
+    <script src="lib/dark-unica.js"></script>
+
+<script>
+"use strict";
+
+var enApiKey = 'ZXDKV4CO0V4AU5QHZ'
+var maxSongsPerArtist = 10;
+var curSong = null;
+var curPercent = 0;
+var duration = 0;
+var theChart = null;
+var thePeaks = null;
+var btn = $("#pause-play");
+
+function shrinkHeader() {
+    $("#ttext").animate( {'font-size': '4px'}, 400, 'swing', 
+        function() {
+            $("#ttext").hide();
+        });
+    $("#ttitle").animate({'font-size': '48px'}, 400);
+}
+
+
+function getEpicNess(song) {
+    var epicness = {
+        songLength:0,
+        dynamicRange:0,
+        buildScore:0,
+        dramaScore:0,
+        totalScore:0
+    }
+    return epicness;
+}
+
+function go() {
+    var artistName = $("#artist-input").val();
+    var songName = $("#song-input").val();
+    if (songName.length > 0) {
+        $(".typeahead").typeahead('close');
+        shrinkHeader();
+        $("#results").show();
+        $("#top").hide();
+        info("Loading info for " + artistName + " - " + songName);
+        searchSong(artistName, songName);
+    } else {
+        info("Enter an artist and a song name");
+    } 
+}
+
+var timer = null;
+
+function pause() {
+    showPlay(btn);
+    window.open('spotify:track:07aUR8QqhFOObXHRYLZ74n', '_parent');
+    if (timer) {
+        clearInterval(timer);
+        timer = null;
+    }
+}
+
+function p2d(i) {
+    var res =  i/100. * duration;
+    return res;
+}
+
+function findPeaks(vec) {
+    var all_top = [];
+    var maxDramaTime = 30;
+    var max = 0;
+    var maxDelta = 0;
+    var start = 10; 
+
+    for (var i = 0; i < vec.length - 1; i++) {
+        var sv = vec[i];
+        var top = 0;
+        var tidx = 0;
+        if (i >= start && sv > max) {
+            max = sv;
+        }
+        if (i >= start) {
+            for (var j = i + 1; j < vec.length; j++) {
+                if (p2d(j - i) > maxDramaTime) {
+                    break;
+                }
+                var ev = vec[j];
+                var dv = ev - sv;
+                if (dv > top) {
+                    top = dv;
+                    tidx = j;
+                    if (dv > maxDelta) {
+                        maxDelta = dv;
+                    }
+                }
+            }
+            all_top.push([top, tidx]);
+        } else {
+            all_top.push([0, i + 1]);
+        }
+    }
+
+
+    var out = [];
+    _.each(all_top, function(v, i) {
+        var delta = v[0];
+        var peak = vec[v[1]];
+        if (i == 0 || (peak >= .8 * max && delta >= .5 * maxDelta)) {
+            var score = v[0] * peak;
+            // out.push( [v[0], i, v[1]])
+            out.push( [score, i, v[1]])
+        }
+    });
+
+    out.sort(function(a,b) {
+        return a[0] - b[0];
+    });
+    out.reverse()
+
+    var out2 = [];
+
+    for (var i = 0; i < out.length; i++) {
+        var v = out[i][0];
+        var idx = out[i][1];
+        var ok = true;
+
+        for (var j = 0; j < out2.length; j++) {
+            var idx2 = out2[j][1];
+            var dist = Math.abs(idx - idx2);
+            if (p2d(dist) < maxDramaTime) {
+                ok = false;
+            }
+        }
+        if (ok && out[i][0] > 0) {
+            out2.push( out[i] )
+        }
+    }
+
+    _.each(out2, function(v) {
+        console.log( v[0], 
+            percentToLabel(curSong, v[1]),
+            percentToLabel(curSong, v[2]))
+    });
+    return out2;
+}
+
+function play(percent_offset) {
+    showPause(btn);
+
+    if (timer != null) {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    if (timer == null) {
+        var url = percentToUrl(curSong, percent_offset);
+        window.open(url, '_parent');
+        curPercent = percent_offset;
+        var startPercent = curPercent;
+        var seconds = 0;
+        theChart.series[0].data[curPercent].select(true);
+
+        timer = setInterval(function() { 
+            seconds += 1;
+            var percent = 100 * seconds / duration;
+            curPercent = Math.round(startPercent + percent);
+            if (curPercent < 100) {
+                theChart.series[0].data[curPercent].select(true);
+            } else {
+                pause();
+            }
+        }, 1000);
+    }
+}
+
+function percentToUrl(song, percent) {
+    var time = percentToTime(song, percent);
+    var mins = Math.floor(time / 60);
+    var secs = Math.round(time - mins * 60);
+    var ssecs = secs.toString()
+    if (ssecs.length < 2) {
+        ssecs = '0' + ssecs;
+    }
+    var ts =  "#" + mins + ":" + ssecs;
+    return song.sid + ts;
+}
+
+function percentToTime(song, percent) {
+    var segs = song.analysis.segments;
+    var last = segs[segs.length - 1];
+    duration = last.start + last.duration;
+    return percent / 100. * duration;
+}
+
+
+function percentToLabel(song, percent) {
+    var time = percentToTime(song, percent);
+    var mins = Math.floor(time / 60);
+    var secs = Math.round(time - mins * 60);
+    var ssecs = secs.toString()
+    if (ssecs.length < 2) {
+        ssecs = '0' + ssecs;
+    }
+    var label =  mins + ":" + ssecs;
+    return label
+}
+
+function searchSong(artist, title) {
+    var url = 'http://developer.echonest.com/api/v4/song/search';
+    var params = {
+        api_key:enApiKey,
+        artist:artist,
+        title:title,
+        sort:'song_hotttnesss-desc',
+        bucket:['audio_summary', 'song_hotttnesss', 
+            'id:spotify', 'tracks', 'id:spotify'],
+        limit:true,
+        results:1
+    }
+    var spid = null;
+
+    if (title.indexOf('spotify:track:') == 0) {
+        spid = title;
+    }
+    if (artist.indexOf('spotify:track:') == 0) {
+        spid = artist;
+    }
+        
+
+    if (spid) {
+        url = 'http://developer.echonest.com/api/v4/song/profile';
+        params = {
+            api_key:enApiKey,
+            track_id:spid,
+            bucket:['audio_summary', 'song_hotttnesss', 
+                'id:spotify', 'tracks', 'id:spotify'],
+            limit:true,
+        }
+    }
+
+    var elem = $("#output");
+    elem.empty();
+
+    $.getJSON(url, params, function(result) {
+        var songs = [];
+
+        function addSong(song, analysis) {
+            info("");
+            song.analysis = analysis;
+            song.sid = song.tracks[song.tracks.length - 1].foreign_id;
+            if (song.analysis) {
+                plotSong(song);
+            }
+        }
+
+        function interp(t, st, et, sv, ev) {
+            var frac = (t - st) / (et - st);
+            return (ev - sv) * frac + sv;
+        }
+
+        function windowedAverage(vec, winsize) {
+            var out = [];
+            for (var i = 0; i < vec.length;  i += winsize * 2) {
+                var sum = 0;
+                var count = 0;
+                for (var j = -winsize; j <= winsize; j++) {
+                    var idx = i + j;
+                    if (idx >= 0 && idx < vec.length) {
+                        sum += vec[idx];
+                        count += 1;
+                    }
+                }
+                out.push(sum / count);
+            }
+            return out;
+        }
+
+        function getFilteredData(song) {
+            var ydata = [];
+            var segs = song.analysis.segments;
+            var first = segs[0];
+            var cseg = first;
+            var last = segs[segs.length - 1];
+            var duration = last.start + last.duration;
+
+            _.each(segs, function(seg, i) {
+                seg.which = i;
+                seg.end = seg.start + seg.duration;
+                if  (i  < segs.length - 1) {
+                    seg.next = segs[i + 1]
+                } else {
+                    seg.next = null;
+                }
+            });
+
+
+            var out = [];
+            for (var permille = 0; permille < 1000; permille += 1) {
+                var secs = permille / 1000.0 * duration;
+                var val = -60;
+                while (cseg && secs > cseg.end) {
+                    cseg = cseg.next;
+                }
+                if (secs >= cseg.start && secs < cseg.loudness_max_time) {
+                    val = interp(secs, cseg.start, cseg.loudness_max_time, cseg.loudness_start, cseg.loudness_max);
+                } else {
+                    var loudness_end = cseg.next ? cseg.next.loudness_start : -60;
+                    val = interp(secs, cseg.loudness_max_time, cseg.end, cseg.loudness_max, loudness_end);
+                }
+                out.push(loud(val));
+            }
+
+            var avg = windowedAverage(out, 5)
+            return avg;
+        }
+
+        function loud(v) {
+            var val =  (v + 60)  / 60.; 
+            return val * val * val;
+        }
+
+
+        function plotSong(song) {
+            var chartDiv = $("<div>");
+            curSong = song;
+            curPercent = 0;
+            elem.append(chartDiv);
+            var y2data = getFilteredData(song);
+            var xlabels = [];
+
+            var segs = song.analysis.segments;
+            var last = segs[segs.length - 1];
+            duration = last.start + last.duration;
+
+            var peaks = findPeaks(y2data);
+            thePeaks = peaks;
+
+            console.log('peaks', peaks);
+
+            _.each(y2data, function(v,i) {
+                xlabels.push(percentToLabel(song, i));
+            });
+
+            var y3data = [];
+
+            _.each(y2data, function(y) {
+                y3data.push(null);
+            });
+
+            _.each(peaks, function(peak, i) {
+                if (i != 0) {
+                    return;
+                }
+                var start = peak[1];
+                var end = peak[2];
+                if (end + 1 < y2data.length) {
+                    end += 1;
+                }
+                var factor = .99;
+                for (var i = start; i <= end; i++) {
+                    y3data[i] = y2data[i] * factor;
+                }
+            });
+
+            $(function () { 
+                chartDiv.highcharts({
+                    chart: {
+                        type:'areaspline',
+                    },
+
+                    plotOptions: {
+                        series: {
+                            marker: {
+                                radius:0.1,
+                                states: {
+                                    hover: {
+                                        radius:5
+                                    },
+                                    select: {
+                                        radius:5
+                                    }
+                                }
+                            },
+                            point: {
+                                events: {
+                                    click: function(e) {
+                                        play(this.x);
+                                    },
+                                }
+                            }
+                        }
+                    },
+
+                    title: {
+                        text: song.artist_name + ' - ' + song.title
+                    },
+
+                    xAxis: {
+                        name:'time',
+                        categories: xlabels,
+                        labels: {
+                            step:5
+                        }
+                    },
+
+                    yAxis: {
+                        max:1,
+                        min:0,
+                        title: {
+                            text: 'The Drama'
+                        }
+                    },
+
+
+                    series: [
+                        {
+                            name:'Loudness',
+                            data:y2data
+                        },
+                        {
+                            name:'Peak Drama',
+                            data:y3data
+                        },
+                    ]
+                });
+                theChart = chartDiv.highcharts();
+            });
+        }
+
+
+        if (result.response && result.response.status.code == 0) {
+            var lastHot = 0
+            if (result.response.songs.length == 0) {
+                error("Can't find that song");
+                $("#results").hide();
+                $("#top").show();
+            }
+            _.each(result.response.songs, function(song) {
+                if (song.song_hotttnesss != lastHot) {
+                    if (songs.length < maxSongsPerArtist) {
+                        songs.push(song);
+                    }
+                    lastHot = songs.song_hotttnesss;
+                }
+            });
+            _.each(songs, function(song) {
+                info("Getting analysis for " + song.artist_name + " - " + song.title);
+                $.getJSON(song.audio_summary.analysis_url, function(analysis) {
+                    addSong(song, analysis)
+                }).error(function() {
+                    addSong(song, null)
+                });
+            });
+        } else {
+            error("trouble fetching song data for name");
+            $("#results").hide();
+        }
+    }).error(function() {
+        $("#results").hide();
+        error("Can't find that song");
+    });
+}
+
+
+function error(msg) {
+    info(msg);
+}
+
+function info(msg) {
+    $("#info").text(msg);
+}
+
+
+function initTypeahead() {
+    var artists = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      limit: 10,
+      prefetch: {
+        url: 'lib/artists.js',
+        filter: function(list) {
+          return $.map(list, function(country) { return { name: country }; });
+        }
+      }
+    });
+     
+    // kicks off the loading/processing of `local` and `prefetch`
+    artists.initialize();
+     
+    // passing in `null` for the `options` arguments will result in the default
+    // options being used
+    $('.typeahead').typeahead({'hint':false}, {
+      name: 'artists2',
+      displayKey: 'name',
+      // `ttAdapter` wraps the suggestion engine in an adapter that
+      // is compatible with the typeahead jQuery plugin
+      source: artists.ttAdapter()
+});
+}
+
+function showPause(btn) {
+    btn.find("i").removeClass('glyphicon-play');
+    btn.find("i").addClass('glyphicon-pause');
+    btn.find("i").text(' Pause the drama');
+}
+
+function showPlay(btn) {
+    btn.find("i").removeClass('glyphicon-pause');
+    btn.find("i").addClass('glyphicon-play');
+    btn.find("i").text(' Play the drama');
+}
+
+jQuery.ajaxSettings.traditional = true;
+$(document).ready(
+    function() {
+        $("#artist-input").keyup(
+            function(event) {
+                if (event.keyCode == 13) {
+                    go();
+                }
+            }
+        );
+        $("#song-input").keyup(
+            function(event) {
+                if (event.keyCode == 13) {
+                    go();
+                }
+            }
+        );
+
+        $("#go").on('click', go);
+        btn.on('click', function() {
+            if (timer) {
+                pause();
+            } else {
+                if (thePeaks) {
+                    play(thePeaks[0][1]);
+                } else {
+                    play(curPercent);
+                }
+            }
+        });
+
+        initTypeahead();
+    }
+);
+
+
+</script>
+
+</body>
+</html>
