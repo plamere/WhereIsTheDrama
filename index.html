@@ -9,7 +9,7 @@
     <link type="text/css" href="styles.css" rel="stylesheet" />
     <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>Is this song epic?</title>
+    <title>Where is the Drama?</title>
     <!-- Custom styles for this template -->
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,6 +38,7 @@
     </div>
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div id='spacer'> </div>
     <div id='top' class="jumbotron jumbotron-inverse jumbotron-hero sp-jumbotron-custom-inverse">
       <div class="container-fluid" id="jumbo-dialog">
         <h1 id='ttitle' > Where is the Drama?</h1>
@@ -85,8 +86,9 @@
     <div id="footer">
       <div class="container text-center">
             <p class="text-muted">
-                Powered by <a href="http://spotify.com">Spotify</a> and
-                <a href="http://the.echonest.com">The Echo Nest</a>.
+                Powered by <a href="http://spotify.com">Spotify</a>, 
+                <a href="http://the.echonest.com">The Echo Nest</a> and
+                <a href="http://www.highcharts.com/">Highcharts</a>.
                 Created by <a href="http://twitter.com/plamere">@plamere</a>
                 at <a href="http://musichackday.de/"> Music Hack Day Berlin</a>.
             </p>
@@ -94,7 +96,6 @@
       </div>
     </div>
     <script src="lib/jquery-1.11.1.min.js"></script>
-    <script src="lib/typeahead.bundle.js"></script>
     <script src="lib/bootstrap.min.js"></script>
     <script src="lib/underscore-min.js"></script>
     <script src="lib/highcharts.js"></script>
@@ -102,6 +103,11 @@
 
 <script>
 "use strict";
+
+/*
+    warning: janky code ahead. Lots of crazy stuff happens at 4AM during a music
+    hack day. 
+*/
 
 var enApiKey = 'ZXDKV4CO0V4AU5QHZ'
 var maxSongsPerArtist = 10;
@@ -136,9 +142,7 @@ function go() {
     var artistName = $("#artist-input").val();
     var songName = $("#song-input").val();
     if (songName.length > 0) {
-        $(".typeahead").typeahead('close');
         shrinkHeader();
-        $("#results").show();
         $("#top").hide();
         info("Loading info for " + artistName + " - " + songName);
         searchSong(artistName, songName);
@@ -203,12 +207,15 @@ function findPeaks(vec) {
     _.each(all_top, function(v, i) {
         var delta = v[0];
         var peak = vec[v[1]];
-        if (i == 0 || (peak >= .8 * max && delta >= .5 * maxDelta)) {
+        if ((out.length == 0 && delta > 0) || (peak >= .8 * max && delta >= .5 * maxDelta)) {
             var score = v[0] * peak;
             // out.push( [v[0], i, v[1]])
             out.push( [score, i, v[1]])
         }
     });
+
+    console.log('out', out);
+
 
     out.sort(function(a,b) {
         return a[0] - b[0];
@@ -304,6 +311,7 @@ function percentToLabel(song, percent) {
 }
 
 function searchSong(artist, title) {
+    setURL(artist, title);
     var url = 'http://developer.echonest.com/api/v4/song/search';
     var params = {
         api_key:enApiKey,
@@ -345,7 +353,11 @@ function searchSong(artist, title) {
         function addSong(song, analysis) {
             info("");
             song.analysis = analysis;
-            song.sid = song.tracks[song.tracks.length - 1].foreign_id;
+            if (spid) {
+                song.sid = spid;
+            } else {
+                song.sid = song.tracks[song.tracks.length - 1].foreign_id;
+            }
             if (song.analysis) {
                 plotSong(song);
             }
@@ -419,6 +431,7 @@ function searchSong(artist, title) {
 
 
         function plotSong(song) {
+            $("#results").show();
             var chartDiv = $("<div>");
             curSong = song;
             curPercent = 0;
@@ -542,7 +555,7 @@ function searchSong(artist, title) {
                 }
             });
             _.each(songs, function(song) {
-                info("Getting analysis for " + song.artist_name + " - " + song.title);
+                info("Looking for the drama in " + song.title + " ... ");
                 $.getJSON(song.audio_summary.analysis_url, function(analysis) {
                     addSong(song, analysis)
                 }).error(function() {
@@ -569,43 +582,47 @@ function info(msg) {
 }
 
 
-function initTypeahead() {
-    var artists = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      limit: 10,
-      prefetch: {
-        url: 'lib/artists.js',
-        filter: function(list) {
-          return $.map(list, function(country) { return { name: country }; });
-        }
-      }
-    });
-     
-    // kicks off the loading/processing of `local` and `prefetch`
-    artists.initialize();
-     
-    // passing in `null` for the `options` arguments will result in the default
-    // options being used
-    $('.typeahead').typeahead({'hint':false}, {
-      name: 'artists2',
-      displayKey: 'name',
-      // `ttAdapter` wraps the suggestion engine in an adapter that
-      // is compatible with the typeahead jQuery plugin
-      source: artists.ttAdapter()
-});
-}
-
 function showPause(btn) {
     btn.find("i").removeClass('glyphicon-play');
     btn.find("i").addClass('glyphicon-pause');
-    btn.find("i").text(' Pause the drama');
+    btn.find("i").text(' Stop the drama');
 }
 
 function showPlay(btn) {
     btn.find("i").removeClass('glyphicon-pause');
     btn.find("i").addClass('glyphicon-play');
     btn.find("i").text(' Play the drama');
+}
+
+function setURL(artist, title) {
+    var p = '?artist=' + artist + '&title=' + title;
+    history.replaceState({}, document.title, p);
+}
+
+function urldecode(str) {
+   return decodeURIComponent((str+'').replace(/\+/g, '%20'));
+}
+
+function processParams() {
+    var params = {};
+    var q = document.URL.split('?')[1];
+    if(q != undefined){
+        q = q.split('&');
+        for(var i = 0; i < q.length; i++){
+            var pv = q[i].split('=');
+            var p = pv[0];
+            var v = pv[1];
+            params[p] = urldecode(v);
+        }
+    }
+
+    if ('artist' in params && 'title' in params) {
+        var artist = params['artist'];
+        var title = params['title'];
+        $("#artist-input").val(artist);
+        $("#song-input").val(title);
+        go();
+    } 
 }
 
 jQuery.ajaxSettings.traditional = true;
@@ -638,8 +655,7 @@ $(document).ready(
                 }
             }
         });
-
-        initTypeahead();
+        processParams();
     }
 );
 

@@ -77,9 +77,13 @@ view) */
 }
 
 #info {
-    margin-top:86px;
     font-size:32px;
     margin-bottom:0px;
+    padding-top:20px;
+}
+
+#spacer {
+    margin-top:66px;
 }
 
 .fine-print {
@@ -123,7 +127,7 @@ view) */
 }
 
 #results {
-    margin-top:86px;
+    margin-top:20px;
     display:none;
 }
 
