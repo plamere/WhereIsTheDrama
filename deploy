@@ -1,1 +1,2 @@
 s3cmd sync --acl-public *  s3://static.echonest.com/WheresTheDrama/
+s3cmd sync --acl-public *  s3://static.echonest.com/WhereIsTheDrama/

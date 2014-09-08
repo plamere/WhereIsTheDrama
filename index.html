@@ -75,6 +75,15 @@
         </div>
         <div id="output" class="artist-result col-sm-12"> </div>
       </div>
+      <div id='the-tweet' class="row">
+        <div class='text-center'>
+            <span class="" id='tweet-span'> 
+                <a href="https://twitter.com/share" data-size="large" id='tweet' class="twitter-share-button" data-lang="en" data-count='none'>Tweet</a>
+                <script>!function(d,s,id){var
+                js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+            </span>
+        </div>
+      </div>
     </div> 
       </div>
     </div>
@@ -300,12 +309,13 @@ function searchTrack(query) {
         type:'track',
         country:'us'
     }
+
+    var ul = $("#search-results-list");
+    ul.empty();
     $.getJSON(url, params, function(result) {
         var tracks = result.tracks.items;
         if (tracks.length > 0) {
             info("Pick a track ...");
-            var ul = $("#search-results-list");
-            ul.empty();
             _.each(tracks, function(track, i) {
                 var a = $("<a>");
                 a.addClass('list-group-item');
@@ -344,6 +354,7 @@ function fetchTrack(uri) {
             track.duration = last.start + last.duration;
             if (track.analysis) {
                 plotTrack(track);
+                tweetSetup();
             }
         }
 
@@ -591,7 +602,11 @@ function processParams() {
         }
     }
 
-    if ('uri' in params) {
+    if ('title' in params) {
+        // backwards compatible.
+        var uri = 'spotify:track:1PB7gRWcvefzu7t3LJLUlf';
+        fetchTrack(uri);
+    } else if ('uri' in params) {
         var uri = params['uri'];
         fetchTrack(uri);
     }
@@ -623,6 +638,34 @@ $(document).ready(
         processParams();
     }
 );
+
+function tweetSetup() {
+    $(".twitter-share-button").remove();
+    var tweet = $('<a>')
+        .attr('href', "https://twitter.com/share")
+        .attr('id', "tweet")
+        .attr('class', "twitter-share-button")
+        .attr('data-lang', "en")
+        .attr('data-size', "large")
+        .attr('data-count', "none")
+        .text('Tweet');
+
+    $("#tweet-span").prepend(tweet);
+
+    var msg = 'Where is the Drama?';
+
+    if (curTrack && curTrack.title) {
+        var msg = 'I found the drama in ' +  curTrack.title + ' with #wheresthedrama'  
+    }  
+
+    tweet.attr('data-text', msg);
+    tweet.attr('data-url', document.URL);
+
+    // twitter can be troublesome. If it is not there, don't bother loading it
+    if ('twttr' in window && twttr.widgets) {
+        twttr.widgets.load();
+    }
+}
 
 
 </script>
