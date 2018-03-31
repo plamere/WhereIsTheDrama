@@ -11,6 +11,12 @@ body {
   background:rgb(29,75,77) !important;
 }
 
+#cover-art {
+    height:100px;
+    width:100px;
+    overflow:hidden;
+}
+
 #footer {
   margin-top:10px;
   width: 100%;
@@ -48,7 +54,7 @@ body {
 }
 
 #top {
-    margin-top:66px;
+    margin-top:6px;
     position:relative;
 }
 
@@ -196,4 +202,17 @@ view) */
 
 #the-tweet {
     margin-top:20px;
+}
+
+#go-drama {
+    margin-left:20px;
+    margin-bottom:6px;
+}
+
+#tweet-span {
+    margin-right:20px;
+}
+
+.xbtn {
+    margin-left:6px;
 }

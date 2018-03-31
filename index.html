@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link type="text/css" href="styles.css" rel="stylesheet" />
-    <link href="dist/sp-bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="https://sp-bootstrap.global.ssl.fastly.net/7.4.1/sp-bootstrap.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="images/favicon.png">
     <title>Where is the Drama?</title>
     <!-- Custom styles for this template -->
@@ -18,70 +18,64 @@
     <![endif]-->
 </head>
   <body >
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
+    <div id="navbar" class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="navbar-inner">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a id='brand' class="navbar-brand"
-          href="index.html"><span>Where is the drama?</span></a>
+          <a class="navbar-brand" href="index.html">
+            <span class="navbar-logo">Spotify</span>
+            <span class="navbar-title">Where is the Drama?</span>
+          </a>
         </div>
         <div class="navbar-collapse collapse">
-          <a href="https://www.spotify.com/" 
-            class="btn btn-primary navbar-btn navbar-right">Get Spotify</a>
-        </div>
-      </div>
+          <div> 
+            <img src="images/spotify.png" class='clickable pull-right' id="cover-art">
+          </div>
+        </div><!--/.navbar-collapse -->
+
+    </div> 
     </div>
 
+
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div id='spacer'> </div>
     <div id='top' class="jumbotron jumbotron-inverse jumbotron-hero sp-jumbotron-custom-inverse">
-      <div class="container-fluid" id="jumbo-dialog">
+      <div id="intro" class="container-fluid" id="jumbo-dialog">
         <h1 id='ttitle' > Where is the Drama?</h1>
         <div id="search-form" class="row">
             <p id='ttext'>
-                Enter a song and we will show you where the <b class="label
-                label-info">DRAMA</b> is.
+                Play a song on Spotify and we will show you where the <b class="label
+                label-primary">DRAMA</b> is.
             </p>
-            <div class="col-sm-offset-3 col-sm-6">
-                <input type="text" 
-                        class="form-control form-group input-lg artist-input"  
-                        id="track-input" 
-                        placeholder="Song Title"
-                        value="">
-                <button class="btn btn-primary btn-lg" id='go' role="button">Search</button></p>
-            </div>
+            <br>
+            <a class="btn btn-primary btn-lg go" id='login-button' role="button">Login with Spotify to get started</a>
         </div>
-
         <div id='info' class="h1 text-center"></div>
-        <div id = "search-results" class="container-fluid">
-            <div class="row">
-                <div  class="col-sm-offset-3 col-sm-6">
-                   <div id="search-results-list" class="list-group"> </div>
-                </div>
-            </div>
-        </div> 
-
-        <div class="container-fluid" id="results">
-      <div class="row">
-        <div class='text-center'>
-             <button id="pause-play" class="play-button btn btn-primary btn-large">
-                <i class="play-text glyphicon glyphicon-play"> Play the Drama</i>
-              </button>
-        </div>
-        <div id="output" class="artist-result col-sm-12"> </div>
       </div>
+
+      <div id="no-song" class="work" style="display:none"> 
+        <h2> Play a song on Spotify to see all the drama. </h2>
+      </div>
+
+      <div id="work" class="work" style="display:none"> 
+        <a id="go-drama" title="skip to the drama!!" class="xbtn btn-danger btn-xs pull-left"><span class="glyphicon glyphicon-fire"></span></a>
+        <a id="btn-pause" style="display:none" title="pause" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-pause"></span></a>
+        <a id="btn-play" title="play" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-play"></span></a>
+        <a id="btn-next" title="next" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-step-forward"></span></a>
+        <span class="pull-right" id='tweet-span'> 
+            <a href="https://twitter.com/share" data-size="large" id='tweet' class="twitter-share-button" data-lang="en" data-count='none'>Tweet</a>
+            <script>!function(d,s,id){var
+            js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </span>
+        <div>
+            <br>
+        </div>
+       <div id="viz-contents"> 
+          <div style="width:100%; height:700px;" id='visualization'> </div>
+       </div>
+      </div>
+
+      <div id="output" class="artist-result col-sm-12"> </div>
       <div id='the-tweet' class="row">
         <div class='text-center'>
-            <span class="" id='tweet-span'> 
-                <a href="https://twitter.com/share" data-size="large" id='tweet' class="twitter-share-button" data-lang="en" data-count='none'>Tweet</a>
-                <script>!function(d,s,id){var
-                js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-            </span>
         </div>
       </div>
     </div> 
@@ -93,11 +87,10 @@
             <p class="text-muted">
                 Created by <a href="http://twitter.com/plamere">@plamere</a>
                 at <a href="http://musichackday.de/"> Music Hack Day Berlin</a>.
-                More info at <a href="http://musicmachinery.com">Music
+                More info at <a href="https://musicmachinery.com/2014/09/08/more-on-wheres-the-drama/">Music
                 Machinery</a>.
             <br>
-                Powered by <a href="http://spotify.com">Spotify</a>, 
-                <a href="http://the.echonest.com">The Echo Nest</a> and
+                Powered by <a href="http://spotify.com">Spotify</a> and
                 <a href="http://www.highcharts.com/">Highcharts</a>.
             <br>
                 Image by <a href="https://www.flickr.com/photos/bigfez/243030084/">Tom Olliver</a>
@@ -109,7 +102,7 @@
     <script src="lib/bootstrap.min.js"></script>
     <script src="lib/underscore-min.js"></script>
     <script src="lib/highcharts.js"></script>
-    <script src="lib/dark-unica.js"></script>
+    <script src="config.js"></script>
 
 <script>
 "use strict";
@@ -119,33 +112,59 @@
     hack day. 
 */
 
-var enApiKey = 'ZXDKV4CO0V4AU5QHZ'
-var maxSongsPerArtist = 10;
+var accessToken = null;
 var curTrack = null;
 var curPercent = 0;
 var theChart = null;
 var thePeaks = null;
-var btn = $("#pause-play");
+var pointsPerSong = 200;
 
 function shrinkHeader() {
-    $("#ttext").animate( {'font-size': '4px'}, 400, 'swing', 
-        function() {
-            $("#ttext").hide();
-        });
-    $("#ttitle").animate({'font-size': '48px'}, 400);
+    $("#intro").hide(400);
 }
 
-
-function go() {
-    var trackName = $("#track-input").val();
-    if (trackName.length > 0) {
-        // shrinkHeader();
-        info("Searching for " + trackName);
-        searchTrack(trackName);
-    } else {
-        info("Enter an artist and a song name");
-    } 
+function isLocalHost() {
+    return window.location.host.indexOf('localhost') >= 0;
 }
+
+function authorizeUser() {
+    var scopes = 'user-top-read user-read-recently-played user-read-currently-playing user-read-playback-state user-modify-playback-state';
+    var url = 'https://accounts.spotify.com/authorize?client_id=' + SPOTIFY_CLIENT_ID +
+        '&response_type=token' +
+        '&show_dialog=false' +
+        '&scope=' + encodeURIComponent(scopes) +
+        '&redirect_uri=' + encodeURIComponent(SPOTIFY_REDIRECT_URI);
+    document.location = url;
+}
+
+function parseHash() {
+    var hash = location.hash.replace(/#/g, '');
+    var all = hash.split('&');
+    var args = {};
+    _.each(all, function(keyvalue) {
+        var kv = keyvalue.split('=');
+        var key = kv[0];
+        var val = kv[1];
+        args[key] = val;
+    });
+    return args;
+}
+
+function parseArgs() {
+    var params = {};
+    var q = document.URL.split('?')[1];
+    if(q != undefined){
+        q = q.split('&');
+        for(var i = 0; i < q.length; i++){
+            var pv = q[i].split('=');
+            var p = pv[0];
+            var v = pv[1];
+            params[p] = urldecode(v);
+        }
+    }
+    return params;
+}
+
 
 var timer = null;
 
@@ -159,7 +178,7 @@ function pause() {
 }
 
 function p2d(i) {
-    var res =  i/100. * curTrack.duration;
+    var res =  i / pointsPerSong * curTrack.duration;
     return res;
 }
 
@@ -244,49 +263,29 @@ function findPeaks(vec) {
     return out2;
 }
 
-function play(percent_offset) {
-    showPause(btn);
-
-    if (timer != null) {
-        clearInterval(timer);
-        timer = null;
-    }
-
-    if (timer == null) {
-        var url = percentToUrl(curTrack, percent_offset);
-        window.open(url, '_parent');
-        curPercent = percent_offset;
-        var startPercent = curPercent;
-        var seconds = 0;
-        theChart.series[0].data[curPercent].select(true);
-
-        timer = setInterval(function() { 
-            seconds += 1;
-            var percent = 100 * seconds / curTrack.duration;
-            curPercent = Math.round(startPercent + percent);
-            if (curPercent < 100) {
-                theChart.series[0].data[curPercent].select(true);
-            } else {
-                pause();
-            }
-        }, 1000);
-    }
+function seek(position_ms) {
+    var url = 'https://api.spotify.com/v1/me/player/seek?position_ms=' + position_ms;
+    callSpotify("PUT", url, null, function(status, data) { });
 }
 
-function percentToUrl(track, percent) {
-    var time = percentToTime(track, percent);
-    var mins = Math.floor(time / 60);
-    var secs = Math.round(time - mins * 60);
-    var ssecs = secs.toString()
-    if (ssecs.length < 2) {
-        ssecs = '0' + ssecs;
-    }
-    var ts =  "#" + mins + ":" + ssecs;
-    return track.uri + ts;
+function pause() {
+    var url = 'https://api.spotify.com/v1/me/player/pause';
+    callSpotify("PUT", url, null, function(status, data) { refreshNowPlaying(); });
 }
+
+function play() {
+    var url = 'https://api.spotify.com/v1/me/player/play';
+    callSpotify("PUT", url, null, function(status, data) { refreshNowPlaying(); });
+}
+
+function playTrack(uri) {
+    var url = 'https://api.spotify.com/v1/me/player/play';
+    callSpotify("PUT", url, { uris: [uri]} , function(status, data) { refreshNowPlaying(); });
+}
+
 
 function percentToTime(track, percent) {
-    return percent / 100. * track.duration;
+    return percent / pointsPerSong * track.duration;
 }
 
 
@@ -302,258 +301,261 @@ function percentToLabel(track, percent) {
     return label
 }
 
-function searchTrack(query) {
-    var url = 'https://api.spotify.com/v1/search';
-    var params = {
-        q: query,
-        type:'track',
-        country:'us'
+function uri_to_id(uri) {
+    var fields = uri.split(':');
+    if (fields.length == 3) {
+        return fields[2];
+    } else {
+        return uri;
     }
+}
 
-    var ul = $("#search-results-list");
-    ul.empty();
-    $.getJSON(url, params, function(result) {
-        var tracks = result.tracks.items;
-        if (tracks.length > 0) {
-            info("Pick a track ...");
-            _.each(tracks, function(track, i) {
-                var a = $("<a>");
-                a.addClass('list-group-item');
-                a.attr('href', '?uri=' + track.uri);
-                a.text(track.name + ' - ' + track.artists[0].name);
-                ul.append(a);
-            });
-            $("#search-results").show();
-        } else {
-            info("Can't find anything that matches " + query);
-        }
+function fetchAnalysis(track) {
+    var url = 'https://api.spotify.com/v1/audio-analysis/' + uri_to_id(track.uri);
+    callSpotify("GET", url, null, function(status, analysis) {
+        track.analysis = analysis;
+        var segs = track.analysis.segments;
+        var last = segs[segs.length - 1];
+        track.duration = last.start + last.duration;
+        plotTrack(track);
+        tweetSetup();
+        curTrack.lastSegment = 0;
     });
 }
 
-function fetchTrack(uri) {
-    var url = 'http://developer.echonest.com/api/v4/track/profile';
-    var params = {
-        api_key:enApiKey,
-        id:uri,
-        bucket:['audio_summary']
+
+function interp(t, st, et, sv, ev) {
+    var frac = (t - st) / (et - st);
+    return (ev - sv) * frac + sv;
+}
+
+function oldWindowedAverage(vec, winsize) {
+    var out = [];
+    for (var i = 0; i < vec.length;  i += winsize * 2) {
+        var sum = 0;
+        var count = 0;
+        for (var j = -winsize; j <= winsize; j++) {
+            var idx = i + j;
+            if (idx >= 0 && idx < vec.length) {
+                sum += vec[idx];
+                count += 1;
+            }
+        }
+        out.push(sum / count);
+    }
+    return out;
+}
+
+function windowedAverage(vec, winsize) {
+    var out = [];
+    for (var i = 0; i < vec.length;  i += winsize * 2) {
+        var sum = 0;
+        var count = 0;
+        var window = [];
+        for (var j = -winsize; j <= winsize; j++) {
+            var idx = i + j;
+            if (idx >= 0 && idx < vec.length) {
+                window.push(vec[idx]);
+            }
+        }
+        window.sort();
+        out.push(window[Math.round(window.length / 2)])
+    }
+    return out;
+}
+
+function getFilteredData(track) {
+    var ydata = [];
+    var segs = track.analysis.segments;
+    var first = segs[0];
+    var cseg = first;
+    var last = segs[segs.length - 1];
+
+    _.each(segs, function(seg, i) {
+        seg.which = i;
+        seg.end = seg.start + seg.duration;
+        if  (i  < segs.length - 1) {
+            seg.next = segs[i + 1]
+        } else {
+            seg.next = null;
+        }
+    });
+
+
+    var out = [];
+    var windowSize = 20;
+    var nPoints = pointsPerSong * windowSize * 2;
+    for (var permille = 0; permille < nPoints; permille += 1) {
+        var secs = permille / nPoints * track.duration;
+        var val = -60;
+        while (cseg && secs > cseg.end) {
+            cseg = cseg.next;
+        }
+        if (secs >= cseg.start && secs < cseg.loudness_max_time) {
+            val = interp(secs, cseg.start, cseg.loudness_max_time, cseg.loudness_start, cseg.loudness_max);
+        } else {
+            var loudness_end = cseg.next ? cseg.next.loudness_start : -60;
+            val = interp(secs, cseg.loudness_max_time, cseg.end, cseg.loudness_max, loudness_end);
+        }
+        out.push(loud(val));
     }
 
-    $("#search-form").hide();
-    var elem = $("#output");
-    elem.empty();
-    info("Getting info on that track ...");
+    var avg = windowedAverage(out, windowSize)
+    return avg;
+}
 
-    $.getJSON(url, params, function(result) {
+function loud(v) {
+    var val =  (v + 60)  / 60.; 
+    return val * val * val;
+}
 
-        function addTrack(track, analysis) {
-            info("");
-            track.analysis = analysis;
-            track.uri = uri;
-            var segs = track.analysis.segments;
-            var last = segs[segs.length - 1];
-            track.duration = last.start + last.duration;
-            if (track.analysis) {
-                plotTrack(track);
-                tweetSetup();
-            }
+
+function plotTrack(track) {
+    $("#work").show();
+    var chartDiv = $("#visualization");
+    curPercent = 0;
+    var y2data = getFilteredData(track);
+    var xlabels = [];
+    var peaks = findPeaks(y2data);
+    thePeaks = peaks;
+
+    _.each(y2data, function(v,i) {
+        xlabels.push(percentToLabel(track, i));
+    });
+
+    var y3data = [];
+
+    _.each(y2data, function(y) {
+        y3data.push(null);
+    });
+
+    _.each(peaks, function(peak, i) {
+        if (i != 0) {
+            return;
         }
-
-        function interp(t, st, et, sv, ev) {
-            var frac = (t - st) / (et - st);
-            return (ev - sv) * frac + sv;
+        var start = peak[1];
+        var end = peak[2];
+        if (end + 1 < y2data.length) {
+            end += 1;
         }
-
-        function windowedAverage(vec, winsize) {
-            var out = [];
-            for (var i = 0; i < vec.length;  i += winsize * 2) {
-                var sum = 0;
-                var count = 0;
-                for (var j = -winsize; j <= winsize; j++) {
-                    var idx = i + j;
-                    if (idx >= 0 && idx < vec.length) {
-                        sum += vec[idx];
-                        count += 1;
-                    }
-                }
-                out.push(sum / count);
-            }
-            return out;
+        var factor = .99;
+        for (var i = start; i <= end; i++) {
+            y3data[i] = y2data[i] * factor;
         }
+    });
 
-        function getFilteredData(track) {
-            var ydata = [];
-            var segs = track.analysis.segments;
-            var first = segs[0];
-            var cseg = first;
-            var last = segs[segs.length - 1];
+    $(function () { 
+        chartDiv.highcharts({
+            chart: {
+                type:'areaspline',
+            },
 
-            _.each(segs, function(seg, i) {
-                seg.which = i;
-                seg.end = seg.start + seg.duration;
-                if  (i  < segs.length - 1) {
-                    seg.next = segs[i + 1]
-                } else {
-                    seg.next = null;
-                }
-            });
-
-
-            var out = [];
-            for (var permille = 0; permille < 1000; permille += 1) {
-                var secs = permille / 1000.0 * track.duration;
-                var val = -60;
-                while (cseg && secs > cseg.end) {
-                    cseg = cseg.next;
-                }
-                if (secs >= cseg.start && secs < cseg.loudness_max_time) {
-                    val = interp(secs, cseg.start, cseg.loudness_max_time, cseg.loudness_start, cseg.loudness_max);
-                } else {
-                    var loudness_end = cseg.next ? cseg.next.loudness_start : -60;
-                    val = interp(secs, cseg.loudness_max_time, cseg.end, cseg.loudness_max, loudness_end);
-                }
-                out.push(loud(val));
-            }
-
-            var avg = windowedAverage(out, 5)
-            return avg;
-        }
-
-        function loud(v) {
-            var val =  (v + 60)  / 60.; 
-            return val * val * val;
-        }
-
-
-        function plotTrack(track) {
-            $("#results").show();
-            var chartDiv = $("<div>");
-            curTrack = track;
-            curPercent = 0;
-            elem.append(chartDiv);
-            var y2data = getFilteredData(track);
-            var xlabels = [];
-            var peaks = findPeaks(y2data);
-            thePeaks = peaks;
-
-            _.each(y2data, function(v,i) {
-                xlabels.push(percentToLabel(track, i));
-            });
-
-            var y3data = [];
-
-            _.each(y2data, function(y) {
-                y3data.push(null);
-            });
-
-            _.each(peaks, function(peak, i) {
-                if (i != 0) {
-                    return;
-                }
-                var start = peak[1];
-                var end = peak[2];
-                if (end + 1 < y2data.length) {
-                    end += 1;
-                }
-                var factor = .99;
-                for (var i = start; i <= end; i++) {
-                    y3data[i] = y2data[i] * factor;
-                }
-            });
-
-            $(function () { 
-                chartDiv.highcharts({
-                    chart: {
-                        type:'areaspline',
-                    },
-
-                    plotOptions: {
-                        series: {
-                            marker: {
-                                radius:0.1,
-                                states: {
-                                    hover: {
-                                        radius:5
-                                    },
-                                    select: {
-                                        radius:5
-                                    }
-                                }
+            plotOptions: {
+                series: {
+                    marker: {
+                        radius:0.1,
+                        states: {
+                            hover: {
+                                radius:5
                             },
-                            point: {
-                                events: {
-                                    click: function(e) {
-                                        play(this.x);
-                                    },
-                                }
+                            select: {
+                                radius:5
                             }
                         }
                     },
-
-                    title: {
-                        text: track.artist + ' - ' + track.title
-                    },
-
-                    tooltip: {
-                        formatter: function () {
-                            var drama = Math.round(this.y * 100) / 100;
-                            return 'The drama at <b>' + this.x + '</b> is <b>' + drama + '</b>';
-                         }
-                    },
-
-                    xAxis: {
-                        name:'time',
-                        categories: xlabels,
-                        labels: {
-                            step:5
+                    point: {
+                        events: {
+                            click: function(e) {
+                                if (curTrack) {
+                                    seek((Math.round(this.x / pointsPerSong * curTrack.duration) * 1000));
+                                }
+                            },
+                        }
+                    }
+                },
+                area: {
+                    events: {
+                        click: function(e) {
                         }
                     },
-
-                    yAxis: {
-                        max:1,
-                        min:0,
-                        title: {
-                            text: 'The Drama'
-                        }
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
                     },
 
+                    marker: {
+                        radius:0.1,
+                        states: {
+                            hover: {
+                                radius:5
+                            },
+                            select: {
+                                radius:5
+                            }
+                        }
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                },
+            },
 
-                    series: [
-                        {
-                            name:'Loudness',
-                            data:y2data
-                        },
-                        {
-                            name:'Peak Drama',
-                            data:y3data
-                        },
-                    ]
-                });
-                theChart = chartDiv.highcharts();
-            });
-        }
+            title: {
+                text: track.name + ' - ' + track.artists[0].name
+            },
+
+            tooltip: {
+                formatter: function () {
+                    var drama = Math.round(this.y * 100) / 100;
+                    return 'The drama at <b>' + this.x + '</b> is <b>' + drama + '</b>';
+                 }
+            },
+
+            xAxis: {
+                categories: xlabels,
+                labels: {
+                    step:8,
+                    staggerLines:1
+                },
+                crosshair:true,
+                title: {
+                    text: 'time'
+                }
+            },
+
+            yAxis: {
+                max:1,
+                min:0,
+                title: {
+                    text: 'The Drama'
+                }
+            },
 
 
-        if (result.response && result.response.status.code == 0) {
-            var track = result.response.track;
-            if ('analysis_url' in track.audio_summary) {
-                shrinkHeader();
-                info("Looking for the drama in " + track.title + " ... ");
-                $.getJSON(track.audio_summary.analysis_url, function(analysis) {
-                    addTrack(track, analysis)
-                });
-            } else {
-                error("That track is a bit too dramatic for me. Try another.");
-                $("#search-form").show();
-                $("#results").hide();
-            }
-        } else {
-            error("Had some trouble getting that info about that track. Try another.");
-            $("#search-form").show();
-            $("#results").hide();
-        }
-    }).error(function() {
-        $("#results").hide();
-        error("Can't find that track");
+            series: [
+                {
+                    name:'Loudness',
+                    data:y2data
+                },
+                {
+                    name:'Peak Drama',
+                    data:y3data
+                },
+            ]
+        });
+        theChart = chartDiv.highcharts();
     });
 }
 
@@ -601,43 +603,179 @@ function processParams() {
             params[p] = urldecode(v);
         }
     }
+}
 
-    if ('title' in params) {
-        // backwards compatible.
-        var uri = 'spotify:track:1PB7gRWcvefzu7t3LJLUlf';
-        fetchTrack(uri);
-    } else if ('uri' in params) {
-        var uri = params['uri'];
-        fetchTrack(uri);
+function now() {
+    var d = new Date();
+    return d.getTime()
+}
+
+function callSpotify(type, url, json, callback) {
+    var payload = {
+        type: type,
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+        },
+        success: function(r) {
+            callback(true, r);
+        },
+        error: function(r) {
+            // 2XX status codes are good, but some have no
+            // response data which triggers the error handler
+            // convert it to goodness.
+            if (r.status >= 200 && r.status < 300) {
+                callback(true, r);
+            } else {
+                callback(false, r);
+            }
+        }
+    };
+
+    if (json != null) {
+        payload.data = JSON.stringify(json);
+        payload.dataType = 'json';
+    }
+
+    $.ajax(url, payload);
+}
+
+
+function fetchNowPlaying(callback) {
+    var url = 'https://api.spotify.com/v1/me/player/currently-playing';
+    callSpotify("GET", url, null, callback);
+}
+
+function updatePlotProgress(timestamp) {
+    var percent = Math.round(pointsPerSong * timestamp / curTrack.duration);
+    if (curTrack && theChart && theChart.series && theChart.series.length > 0 && theChart.series[0].data.length > percent) {
+        theChart.series[0].data[percent].select(true);
     }
 }
 
-jQuery.ajaxSettings.traditional = true;
+var lastPlayState = false;
+function refreshNowPlaying() {
+    fetchNowPlaying(function(status, data) {
+        if (data == null) {
+            $("#work").hide();
+            $("#no-song").show();
+            return;
+        }
+
+        if (data.is_playing != lastPlayState) {
+            lastPlayState = data.is_playing;
+            if (lastPlayState) {
+                $("#btn-play").hide();
+                $("#btn-pause").show();
+            } else {
+                $("#btn-play").show();
+                $("#btn-pause").hide();
+            }
+        }
+
+        $("#work").show();
+        $("#no-song").hide();
+
+        var time_delta = now() - (data.timestamp + data.progress_ms);
+
+        if (curTrack == null || data.item.uri != curTrack.uri) {
+            if (data.item.album && data.item.album.images.length > 0) {
+                $("#cover-art").attr('src', data.item.album.images[0].url);
+            }
+            curTrack = data.item;
+            setURL();
+            fetchAnalysis(curTrack);
+        }
+        var progress = Math.round(data.progress_ms / 1000);
+        updatePlotProgress(progress);
+    });
+}
+
+function autoRefreshNowPlaying() {
+    refreshNowPlaying();
+    setTimeout(autoRefreshNowPlaying, 200);
+}
+
+function isFirstTimeVisitor() {
+    var loggedIn = localStorage.getItem("hasLoggedIn");
+    return loggedIn == null;
+}
+
 $(document).ready(
     function() {
-        $("#track-input").keyup(
-            function(event) {
-                if (event.keyCode == 13) {
-                    go();
-                }
-            }
-        );
 
-        $("#go").on('click', go);
-        btn.on('click', function() {
-            if (timer) {
-                pause();
-            } else {
-                if (thePeaks) {
-                    play(thePeaks[0][1]);
-                } else {
-                    play(curPercent);
-                }
+        if (isLocalHost()) {
+            SPOTIFY_REDIRECT_URI = LOCAL_SPOTIFY_REDIRECT_URI;
+        }
+        var hash = parseHash();
+        var args = parseArgs();
+        window.location.hash = "";
+
+        if ('trid' in args) {
+            var trackUri = args['trid'];
+            localStorage.setItem("trid", trackUri);
+        } 
+
+        $(".work").hide();
+        if ('error' in hash) {
+            error("Sorry, I can't read your play history Spotify without authorization");
+            $("#login-button").show();
+            $("#login-button").on('click', function() {
+                authorizeUser();
+            });
+        } else if ('access_token' in hash) {
+            accessToken = hash['access_token'];
+            localStorage.setItem("hasLoggedIn", "true");
+            var trid = localStorage.getItem("trid"); 
+            shrinkHeader();
+            if (trid) {
+               playTrack(trid);
+               pause();
+               localStorage.setItem("trid", null); 
+            } 
+            autoRefreshNowPlaying();
+        } else {
+            $("#login-button").on('click', function() {
+                authorizeUser();
+            });
+            if (localStorage.getItem('hasLoggedIn') == "true") {
+                authorizeUser();
             }
+        }
+
+        $("#go-drama").on('click', function() {
+            if (thePeaks) {
+                var percent = thePeaks[0][1];
+                seek((Math.round(percent / pointsPerSong * curTrack.duration) * 1000));
+                if (!lastPlayState) {
+                    play();
+                }
+            } 
         });
+
+        $("#btn-play").on("click", function() {
+            play();
+            $("#btn-play").hide();
+            $("#btn-pause").show();
+        });
+
+        $("#btn-pause").on("click", function() {
+            pause();
+            $("#btn-play").show();
+            $("#btn-pause").hide();
+        });
+
         processParams();
     }
 );
+
+function setURL() {
+    if (curTrack) {
+        var p = '?trid=' + curTrack.uri;
+        history.replaceState({}, document.title, p);
+    }
+    tweetSetup();
+}
 
 function tweetSetup() {
     $(".twitter-share-button").remove();
@@ -654,8 +792,8 @@ function tweetSetup() {
 
     var msg = 'Where is the Drama?';
 
-    if (curTrack && curTrack.title) {
-        var msg = 'I found the drama in ' +  curTrack.title + ' with #wheresthedrama'  
+    if (curTrack && curTrack.name) {
+        msg = 'I found the drama in ' +  curTrack.name + ' by ' + curTrack.artists[0].name + ' with #wheresthedrama'  
     }  
 
     tweet.attr('data-text', msg);
