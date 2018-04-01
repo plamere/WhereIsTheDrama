@@ -50,16 +50,20 @@
         </div>
         <div id='info' class="h1 text-center"></div>
       </div>
-
+    </div>
+    <div class="ncontainer">
       <div id="no-song" class="work" style="display:none"> 
         <h2> Play a song on Spotify to see all the drama. </h2>
       </div>
-
       <div id="work" class="work" style="display:none"> 
         <a id="go-drama" title="skip to the drama!!" class="xbtn btn-danger btn-xs pull-left"><span class="glyphicon glyphicon-fire"></span></a>
         <a id="btn-pause" style="display:none" title="pause" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-pause"></span></a>
         <a id="btn-play" title="play" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-play"></span></a>
+        <!--
         <a id="btn-next" title="next" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-step-forward"></span></a>
+        -->
+        <img id="spinner" class="pull-left" src="images/ajaxSpinner.gif" width="32px">
+        <span id='loading' class="pull-left"> loading </span>
         <span class="pull-right" id='tweet-span'> 
             <a href="https://twitter.com/share" data-size="large" id='tweet' class="twitter-share-button" data-lang="en" data-count='none'>Tweet</a>
             <script>!function(d,s,id){var
@@ -72,8 +76,6 @@
           <div style="width:100%; height:700px;" id='visualization'> </div>
        </div>
       </div>
-
-      <div id="output" class="artist-result col-sm-12"> </div>
       <div id='the-tweet' class="row">
         <div class='text-center'>
         </div>
@@ -118,9 +120,10 @@ var curPercent = 0;
 var theChart = null;
 var thePeaks = null;
 var pointsPerSong = 200;
+var isAutoUpdate = false;
 
 function shrinkHeader() {
-    $("#intro").hide(400);
+    $("#top").hide(400);
 }
 
 function isLocalHost() {
@@ -263,6 +266,11 @@ function findPeaks(vec) {
     return out2;
 }
 
+function playNext() {
+    var url = 'https://api.spotify.com/v1/me/player/next';
+    callSpotify("POST", url, null, function(status, data) { refreshNowPlaying() });
+}
+
 function seek(position_ms) {
     var url = 'https://api.spotify.com/v1/me/player/seek?position_ms=' + position_ms;
     callSpotify("PUT", url, null, function(status, data) { });
@@ -278,9 +286,9 @@ function play() {
     callSpotify("PUT", url, null, function(status, data) { refreshNowPlaying(); });
 }
 
-function playTrack(uri) {
+function playTrack(uri, callback) {
     var url = 'https://api.spotify.com/v1/me/player/play';
-    callSpotify("PUT", url, { uris: [uri]} , function(status, data) { refreshNowPlaying(); });
+    callSpotify("PUT", url, { uris: [uri]} , function(status, data) { if (callback) callback(); });
 }
 
 
@@ -310,16 +318,33 @@ function uri_to_id(uri) {
     }
 }
 
+function loading(track) {
+    if (track) {
+        $("#spinner").show();
+        $("#loading").text("finding the drama in " + track.name + " by " + track.artists[0].name);
+        $("#loading").show();
+    } else {
+        $("#spinner").hide();
+        $("#loading").hide();
+    }
+}
+
 function fetchAnalysis(track) {
+    loading(track);
     var url = 'https://api.spotify.com/v1/audio-analysis/' + uri_to_id(track.uri);
     callSpotify("GET", url, null, function(status, analysis) {
-        track.analysis = analysis;
-        var segs = track.analysis.segments;
-        var last = segs[segs.length - 1];
-        track.duration = last.start + last.duration;
-        plotTrack(track);
-        tweetSetup();
-        curTrack.lastSegment = 0;
+        if (track.uri == curTrack.uri) {
+            loading(null);
+            $("#work").show();
+            $("#no-song").hide();
+            track.analysis = analysis;
+            var segs = track.analysis.segments;
+            var last = segs[segs.length - 1];
+            track.duration = last.start + last.duration;
+            plotTrack(track);
+            tweetSetup();
+            curTrack.lastSegment = 0;
+        }
     });
 }
 
@@ -605,6 +630,23 @@ function processParams() {
     }
 }
 
+function loadTrack(trid) {
+    console.log('loadTrack', trid);
+    var url = 'https://api.spotify.com/v1/tracks/' + uri_to_id(trid);
+    callSpotify("GET", url, null, function(status, track) {
+        if (track == null) {
+            $("#work").hide();
+            $("#no-song").show();
+            return;
+        }
+
+        $("#work").show();
+        $("#no-song").hide();
+
+        setNewTrack(track);
+    });
+}
+
 function now() {
     var d = new Date();
     return d.getTime()
@@ -654,6 +696,24 @@ function updatePlotProgress(timestamp) {
 }
 
 var lastPlayState = false;
+
+
+function setNewTrack(track) {
+    if (curTrack == null || track.uri != curTrack.uri) {
+        if (track.album && track.album.images.length > 0) {
+            $("#cover-art").attr('src', track.album.images[0].url);
+        }
+        curTrack = track;
+        setURL();
+        fetchAnalysis(curTrack);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
 function refreshNowPlaying() {
     fetchNowPlaying(function(status, data) {
         if (data == null) {
@@ -673,25 +733,14 @@ function refreshNowPlaying() {
             }
         }
 
-        $("#work").show();
-        $("#no-song").hide();
-
-        var time_delta = now() - (data.timestamp + data.progress_ms);
-
-        if (curTrack == null || data.item.uri != curTrack.uri) {
-            if (data.item.album && data.item.album.images.length > 0) {
-                $("#cover-art").attr('src', data.item.album.images[0].url);
-            }
-            curTrack = data.item;
-            setURL();
-            fetchAnalysis(curTrack);
+        if (!setNewTrack(data.item)) {
+            updatePlotProgress(Math.round(data.progress_ms / 1000));
         }
-        var progress = Math.round(data.progress_ms / 1000);
-        updatePlotProgress(progress);
     });
 }
 
 function autoRefreshNowPlaying() {
+    isAutoUpdate = true;
     refreshNowPlaying();
     setTimeout(autoRefreshNowPlaying, 200);
 }
@@ -699,6 +748,28 @@ function autoRefreshNowPlaying() {
 function isFirstTimeVisitor() {
     var loggedIn = localStorage.getItem("hasLoggedIn");
     return loggedIn == null;
+}
+
+function startPlayingTrackAt(uri, seekPos) {
+    playTrack(uri, function() {
+        whenTrackIsPlayingSeekTo(uri, seekPos);
+    });
+}
+
+
+function whenTrackIsPlayingSeekTo(uri, seekPos) {
+    fetchNowPlaying(function(status, data) {
+        console.log('wtips', uri, data.item.uri, seekPos);
+        var track = data.item;
+        if (track.uri == uri) {
+            if (seekPos != 0) {
+                seek(seekPos);
+            }
+            autoRefreshNowPlaying();
+        } else {
+            setTimeout(function() { whenTrackIsPlayingSeekTo(uri, seekPos); }, 200);
+        }
+    });
 }
 
 $(document).ready(
@@ -729,11 +800,14 @@ $(document).ready(
             var trid = localStorage.getItem("trid"); 
             shrinkHeader();
             if (trid) {
-               playTrack(trid);
-               pause();
-               localStorage.setItem("trid", null); 
-            } 
-            autoRefreshNowPlaying();
+               console.log('trid', trid);
+               localStorage.removeItem("trid"); 
+               loadTrack(trid);
+            } else {
+                $("#work").show();
+                $("#no-song").hide();
+                autoRefreshNowPlaying();
+            }
         } else {
             $("#login-button").on('click', function() {
                 authorizeUser();
@@ -746,15 +820,25 @@ $(document).ready(
         $("#go-drama").on('click', function() {
             if (thePeaks) {
                 var percent = thePeaks[0][1];
-                seek((Math.round(percent / pointsPerSong * curTrack.duration) * 1000));
-                if (!lastPlayState) {
-                    play();
+                if (!isAutoUpdate) {
+                    startPlayingTrackAt(curTrack.uri, (Math.round(percent / pointsPerSong * curTrack.duration) * 1000));
+                } else {
+                    seek((Math.round(percent / pointsPerSong * curTrack.duration) * 1000));
+                    if (!lastPlayState) {
+                        play();
+                    }
                 }
             } 
         });
 
         $("#btn-play").on("click", function() {
-            play();
+            if (isAutoUpdate) {
+                play();
+            } else {
+                if (curTrack) {
+                    startPlayingTrackAt(curTrack.uri, 0);
+                }
+            }
             $("#btn-play").hide();
             $("#btn-pause").show();
         });
@@ -765,9 +849,13 @@ $(document).ready(
             $("#btn-pause").hide();
         });
 
-        processParams();
+        $("#btn-next").on("click", function() {
+            playNext();
+        });
+
     }
 );
+
 
 function setURL() {
     if (curTrack) {

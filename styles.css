@@ -8,7 +8,9 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 28px;
   padding-top: 0;
-  background:rgb(29,75,77) !important;
+  /*background:rgb(29,75,77) !important;*/
+  background:rgb(0,0,0) !important;
+  font-color:white;
 }
 
 #cover-art {
@@ -17,6 +19,9 @@ body {
     overflow:hidden;
 }
 
+#top {
+    height:200px;
+}
 #footer {
   margin-top:10px;
   width: 100%;
@@ -80,6 +85,7 @@ view) */
 }
 
 .work {
+    margin-top:10px;
 }
 
 #info {
@@ -215,4 +221,15 @@ view) */
 
 .xbtn {
     margin-left:6px;
+}
+
+#spinner {
+    margin-left:20px;
+    display:none;
+}
+
+#loading {
+    color:white;
+    margin-left:20px;
+    font-size:24px;
 }
