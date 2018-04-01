@@ -10,7 +10,7 @@ body {
   padding-top: 0;
   /*background:rgb(29,75,77) !important;*/
   background:rgb(0,0,0) !important;
-  font-color:white;
+  color:white;
 }
 
 #cover-art {
@@ -232,4 +232,14 @@ view) */
     color:white;
     margin-left:20px;
     font-size:24px;
+}
+
+#no-song {
+    margin-left:60px;
+    color:#eeeeee;
+    font-size:28px;
+}
+
+#btn-gallery {
+    margin-left:32px;
 }

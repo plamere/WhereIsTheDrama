@@ -54,11 +54,38 @@
     <div class="ncontainer">
       <div id="no-song" class="work" style="display:none"> 
         <h2> Play a song on Spotify to see all the drama. </h2>
+        Or try one of these examples:
+
+        <ul id="song-list">
+            <li> <a href="?trid=spotify:track:3nm8DwebzyBkQB1vb9mKsG"> Pines of Rome - Ottorino Respighi</a> </li>
+            <li> <a href="?trid=spotify:track:2vwlzO0Qp8kfEtzTsCXfyE"> Wrecking Ball - Miley Cyrus </a> </li>
+            <li> <a href="?trid=spotify:track:0aym2LBJBk9DAYuHHutrIl"> Hey Jude - The Beatles</a> </li>
+            <li> <a href="?trid=spotify:track:3PYdxIDuBIuJSDGwfptFx4"> My Immortal- Evanescence</a> </li>
+            <li> <a href="?trid=spotify:track:2G2zbUj2nuznhWAl3CCZcK"> Alive - Ravenscry</a> </li>
+            <li> <a href="?trid=spotify:track:1rxD34LAtkafrMUHqHIV76"> Bring it on Home - Led Zeppelin</a> </li>
+            <li> <a href="?trid=spotify:track:2O7JpRcsiuSXUbA7rCI855"> The Promise - Within Temptation</a> </li>
+            <li> <a href="?trid=spotify:track:2s1sdSqGcKxpPr5lCl7jA">  Chandelier- Sia </a> </li>
+            <li> <a href="?trid=spotify:track:6oWacAPUt8LMXqRkEk2MNg"> 1812 Overture - Tchaikovsky </a> </li>
+            <li> <a href="?trid=spotify:track:1t9us2hggVqmnyWz7uG54y"> Unison - Björk</a> </li>
+            <li> <a href="?trid=spotify:track:7tFiyTwD0nx5a1eklYtX2J"> Bohemian Rhapsody - Queen</a> </li>
+            <li> <a href="?trid=spotify:track:5zhuWncJsBKrQ1HhmAKNAg"> Hall of the Mountain King- Edvard Grieg</a> </li>
+            <li> <a href="?trid=spotify:track:52Fw0bPlDegUpoETTxtIgf"> Taijin Kyofusho- Evpatoria Report </a> </li>
+            <li> <a href="?trid=spotify:track:6mkdHi4RAWqGpkB6pPLfPK"> A Poor Man's Memory - Explosions in the Sky</a> </li>
+            <li> <a href="?trid=spotify:track:2TjdnqlpwOjhijHCwHCP2d"> Great Gig in the SKy - Pink Floyd</a> </li>
+            <li> <a href="?trid=spotify:track:1rOlTL4pKQ9Y1fURua4AJR"> My Body is A Cage - Arcade Fire </a> </li>
+            <li> <a href="?trid=spotify:track:4YXLgkSe0ehsnYf00WPTeW"> Organ Symphony - Camille Saint-Saens</a> </li>
+            <li> <a href="?trid=spotify:track:0kc4Bh5XrexsUbQw8kojrp"> Ghost Love Score - Nightwish</a> </li>
+            <li> <a href="?trid=spotify:track:0ILR5GMSzBRp2LrI8GX1Si"> I'll follow you- Shinedown</a> </li>
+        </ul>
+
+        Or anything in this playlist <a href="spotify:user:ruhin94:playlist:0bG1EMQkukEeO7vvcQQQYU"> Holy Shit - An Incredibly Epic Playlist | Music Scores and Soundtracks </a>
       </div>
+
       <div id="work" class="work" style="display:none"> 
         <a id="go-drama" title="skip to the drama!!" class="xbtn btn-danger btn-xs pull-left"><span class="glyphicon glyphicon-fire"></span></a>
         <a id="btn-pause" style="display:none" title="pause" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-pause"></span></a>
         <a id="btn-play" title="play" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-play"></span></a>
+        <button id="btn-gallery" title="gallery" class="xbtn btn-primary btn-xs pull-left">Gallery</button>
         <!--
         <a id="btn-next" title="next" class="xbtn btn-primary btn-xs pull-left"><span class="glyphicon glyphicon-step-forward"></span></a>
         -->
@@ -841,6 +868,11 @@ $(document).ready(
             }
             $("#btn-play").hide();
             $("#btn-pause").show();
+        });
+
+        $("#btn-gallery").on("click", function() {
+            $("#no-song").show();
+            $("#work").hide();
         });
 
         $("#btn-pause").on("click", function() {
